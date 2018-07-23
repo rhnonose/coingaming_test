@@ -18,10 +18,26 @@ defmodule ExBankingTest do
       ExBanking.create_user("rodrigo")
       assert {:error, :user_already_exists} == ExBanking.create_user("rodrigo")
     end
+  end
 
-    # test "should error with user_does_not_exist" do
-    #   assert {:error, :user_does_not_exist} == ExBanking.create_user("")
-    # end
+  describe "deposit/3" do
+    test "should increase the amount from zero" do
+      ExBanking.cleanup()
+      ExBanking.create_user("rodrigo")
+
+      assert {:ok, 10} == ExBanking.deposit("rodrigo", 10, "BRL")
+      assert {:ok, 30} == ExBanking.deposit("rodrigo", 20, "BRL")
+
+      assert {:ok, 10} == ExBanking.deposit("rodrigo", 10, "USD")
+      assert {:ok, 30} == ExBanking.deposit("rodrigo", 20, "USD")
+    end
+    test "should error with user_does_not_exist" do
+      ExBanking.cleanup()
+
+      assert {:error, :user_does_not_exist} == ExBanking.deposit("bla", 10, "BRL")
+    end
+  end
+
 
     # test "should error with not_enough_money" do
     #   assert {:error, :not_enough_money} == ExBanking.create_user("")
@@ -46,14 +62,6 @@ defmodule ExBankingTest do
     # test "should error with too_many_requests_to_receiver" do
     #   assert {:error, :too_many_requests_to_receiver} == ExBanking.create_user("")
     # end
-
-  end
-
-
-  describe "deposit/3" do
-
-  end
-
 
   describe "withdraw/3" do
 

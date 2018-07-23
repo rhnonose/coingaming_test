@@ -1,7 +1,7 @@
 defmodule ExBanking.AccountCreator do
 
   def create_account(username) when is_binary(username) do
-    {:ok, %{"BRL" => 0, "USD" => 0}}
+    {:ok, %{}}
   end
 
   def can_it_be_created("", _state), do: {:error, :wrong_arguments}

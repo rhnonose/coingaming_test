@@ -1,6 +1,9 @@
 defmodule ExBanking.Worker do
 
-  alias ExBanking.AccountCreator
+  alias ExBanking.{
+    AccountCreator,
+    Depositer
+  }
 
   def child_spec(opts) do
       %{
@@ -24,6 +27,15 @@ defmodule ExBanking.Worker do
       {:reply, :ok, Map.put(state, username, account_content)}
     else
       error -> {:reply, error, state}
+    end
+  end
+
+  def handle_call({:deposit, username, amount, currency}, _caller, state) do
+    with :ok <- Depositer.can_it_be_deposited(username, state),
+         {:ok, new_balance, new_state} <- Depositer.deposit(username, amount, currency, state) do
+           {:reply, {:ok, new_balance}, new_state}
+      else
+        error -> {:reply, error, state}
     end
   end
 
